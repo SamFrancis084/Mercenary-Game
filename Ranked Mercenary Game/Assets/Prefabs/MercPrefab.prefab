@@ -57,6 +57,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -78,6 +80,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -176,6 +179,37 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 370514512373286641}
   m_maskType: 0
+--- !u!1 &3495183059091318170
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6669807416298822843}
+  m_Layer: 7
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6669807416298822843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3495183059091318170}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.501, z: 0.571}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7940902323249954889}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7838204025656979648
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7940902323249954889}
+  - component: {fileID: 1914612313032529884}
   - component: {fileID: 5068247536879400050}
   - component: {fileID: -4199995729765753048}
   - component: {fileID: 5468156078740834518}
@@ -210,8 +245,30 @@ Transform:
   m_Children:
   - {fileID: 582919225053628569}
   - {fileID: 1526568769095166107}
+  - {fileID: 6669807416298822843}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1914612313032529884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838204025656979648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab52afebdbcafb04ca7933068e32e15b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcHealthManager
+  isAlive: 1
+  maxHealth: 100
+  currentHealth: 0
+  npcScript: {fileID: 5068247536879400050}
+  gibGo: {fileID: 3700138826753198300, guid: 30f011ab65e175a4b80fe28e1bfd6874, type: 3}
+  dmgToGib: 20
+  hurtGo: {fileID: 4899110881135499833, guid: 2907afcb96adcef40b55b1925c7b8bba, type: 3}
+  deadGo: {fileID: 4899110881135499833, guid: cf173d74733fdfa4a9f0dbda11b4ce4c, type: 3}
+  rdScript: {fileID: 7346629577661915134}
 --- !u!114 &5068247536879400050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,15 +286,12 @@ MonoBehaviour:
     powerLevel: 0
     rank: 0
     currentMoney: 0
-    maxHealth: 0
-    damage: 0
+    maxHealth: 20
+    damage: 5
     accuracy: 0
     speed: 0
   currentHealth: 0
   isDead: 0
-  rdScript: {fileID: 7346629577661915134}
-  myAnimator: {fileID: 2298938589296702716}
-  animSpeedString: Speed
   myMoveState: 1
   isAggro: 1
   playerTag: Player
@@ -246,15 +300,22 @@ MonoBehaviour:
   walkSpeed: 4
   runSpeed: 7.5
   maxSpeed: 7.5
+  myAnimator: {fileID: 2298938589296702716}
+  animSpeedString: Speed
   currentAnimSpeed: 0
   animSpeedDamp: 8
   rotDamp: 8
   wanderRadius: 24.02
   wanderIdleTime: 2
-  playerT: {fileID: 0}
+  attackType: 0
+  targetT: {fileID: 0}
   pursueRadius: 18.2
-  aggroRadius: 5
+  attackRadius: 5
   aggroTime: 2.5
+  attackPoint: {fileID: 6669807416298822843}
+  attackRate: 0.5
+  projectileGo: {fileID: 8742878994817435743, guid: 6d79f341dd7729d48be9ccf2f5a4ca35, type: 3}
+  projForce: 50
   rbRoot: {fileID: 4919799133488752653}
   hurtGo: {fileID: 4899110881135499833, guid: 2907afcb96adcef40b55b1925c7b8bba, type: 3}
   deadGo: {fileID: 4899110881135499833, guid: cf173d74733fdfa4a9f0dbda11b4ce4c, type: 3}
