@@ -8,9 +8,7 @@ public class BaseNPC : MonoBehaviour
     public bool isDead = false;
 
     public RagdollController rdScript;
-    public Animator myAnimator;
-    public string animSpeedString = "speed";
-
+    
     public MovementState myMoveState;
     public bool isAggro = false;
 
@@ -25,6 +23,8 @@ public class BaseNPC : MonoBehaviour
     public float runSpeed = 7.5f;
     public float maxSpeed = 7.5f; // change both of these when using navmesh
 
+    public Animator myAnimator;
+    public string animSpeedString = "speed";
     [SerializeField] float currentAnimSpeed = 0f; // for lerping
     [SerializeField] float animSpeedDamp = 20f;
     [SerializeField] float rotDamp = 20f;
@@ -42,6 +42,16 @@ public class BaseNPC : MonoBehaviour
     [SerializeField] float attackRadius = 5f; // change to a cone of vision
     [SerializeField] float aggroTime = 5f; // use once player is out of range
     float aggroTimer = 0f;
+
+    [Header("Attacking")]
+    public Transform attackPoint;
+    public float attackRate = 0.5f;
+    float attackTimer = 0f;
+    public GameObject projectileGo;
+    public float projForce = 100f;
+
+    [Header("Health")]
+    //HealthManager healthManager;
 
     [Header("Visuals")]
     [SerializeField] Transform rbRoot;
@@ -116,7 +126,7 @@ public class BaseNPC : MonoBehaviour
             break;
 
             case MovementState.ATTACK:
-                //
+                Attack();
             break;
 
             case MovementState.FLEE:
@@ -196,7 +206,8 @@ public class BaseNPC : MonoBehaviour
         if (distToPos < attackRadius)
         {
             currentSpeed = 0f;
-            //myMoveState = MovementState.ATTACK;
+            
+            myMoveState = MovementState.ATTACK;
         }
         else
         {
@@ -211,16 +222,36 @@ public class BaseNPC : MonoBehaviour
 
     void Attack()
     {
-        switch (attackType)
+        UpdateAnimator();
+
+        float distToPos = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(targetT.position.x, targetT.position.z));
+
+        if (distToPos < attackRadius)
         {
-            case AttackType.MELEE:
-                //
-                break;
-            case AttackType.RANGED:
-                //
-                break;
+            Vector3 dir = (targetT.position - attackPoint.position).normalized;
+            transform.rotation = SmoothRotateToTarget(dir);
+
+            attackTimer -= Time.deltaTime;
+            if (attackTimer <= 0) // attack
+            {
+                Fire(dir);
+                attackTimer = attackRate;
+            }
         }
-            
+        else
+        {
+            myMoveState = MovementState.ATTACK;
+        }
+        
+    }
+
+    void Fire(Vector3 dir)
+    {
+        GameObject proj = Instantiate(projectileGo, attackPoint.position, transform.rotation);
+        Rigidbody rb = proj.GetComponent<Rigidbody>();
+        proj.GetComponent<Projectile>().damage = myStats.damage;
+
+        rb.AddForce(dir * projForce, ForceMode.Impulse);
     }
 
     Quaternion SmoothRotateToTarget(Vector3 dir)

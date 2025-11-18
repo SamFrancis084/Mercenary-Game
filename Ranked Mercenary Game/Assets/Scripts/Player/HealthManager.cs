@@ -8,20 +8,15 @@ public class HealthManager : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    [SerializeField] PlayerUi uiScript;
-
-    public static event Action<HealthManager> HasDied;
 
     private void Awake()
     {
         InitHealth();
     }
 
-    void InitHealth()
+    public virtual void InitHealth()
     {
-        currentHealth = maxHealth;
-
-        uiScript.UpdateHealthUi(currentHealth, maxHealth);
+        currentHealth = maxHealth;        
     }
 
     //test
@@ -30,7 +25,7 @@ public class HealthManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F)) TakeDamage(10);
     }
 
-    public void TakeDamage(int dmg)
+    public virtual void TakeDamage(int dmg)
     {
         if (currentHealth - dmg > 0)
         {
@@ -41,17 +36,14 @@ public class HealthManager : MonoBehaviour
             currentHealth = 0;
             Die();
         }
-        uiScript.UpdateHealthUi(currentHealth, maxHealth);
     }
 
-    public void Die()
+    public virtual void Die()
     {
         isAlive = false;
-
-        if (HasDied != null) HasDied(this);
     }
 
-    public void Heal(int healAmount)
+    public virtual void Heal(int healAmount)
     {
         if (currentHealth + healAmount < maxHealth)
         {
@@ -61,6 +53,5 @@ public class HealthManager : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        uiScript.UpdateHealthUi(currentHealth, maxHealth);
     }
 }
