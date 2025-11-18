@@ -115,10 +115,10 @@ public class WeaponManager : MonoBehaviour
             gunText.text = $"Current Weapon: {currentWeapon.name} | damage: <color=\"red\">{dmg}</color> | distance: <color=\"yellow\">{hitDist}</color>";
 
             //damage npcs
-            if (hit.transform.GetComponent<BaseNPC>() != null)
+            if (hit.transform.TryGetComponent<HealthManager>(out HealthManager healthManager))
             {
                 Vector3 dir = (hit.point - firePoint).normalized;
-                hit.transform.GetComponent<BaseNPC>().TakeDamage(dmg, dir, gunStats.weaponForce, hit.point);
+                healthManager.TakeDamage(dmg, gunStats.weaponForce, hit.point, dir);
             }
             else
             {

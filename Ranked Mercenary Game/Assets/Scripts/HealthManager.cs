@@ -8,6 +8,7 @@ public class HealthManager : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
+    public BaseNPC npcScript; // if applicable
 
     private void Awake()
     {
@@ -19,26 +20,27 @@ public class HealthManager : MonoBehaviour
         currentHealth = maxHealth;        
     }
 
-    //test
-    private void Update()
+    public virtual void InitNpcHealth(BaseNPC npc)
     {
-        if (Input.GetKeyDown(KeyCode.F)) TakeDamage(10);
+        npcScript = npc;
+        maxHealth = npc.myStats.maxHealth;
+        currentHealth = maxHealth;
     }
 
-    public virtual void TakeDamage(int dmg)
+    public virtual void TakeDamage(int damage, float force = 0f, Vector3 hitPoint = new Vector3(), Vector3 dir = new Vector3())
     {
-        if (currentHealth - dmg > 0)
+        if (currentHealth - damage > 0)
         {
-            currentHealth -= dmg;
+            currentHealth -= damage;
         }
         else
         {
             currentHealth = 0;
-            Die();
+            Die(force, dir);
         }
     }
 
-    public virtual void Die()
+    public virtual void Die(float force = 0, Vector3 dir = new Vector3())
     {
         isAlive = false;
     }

@@ -342,6 +342,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5068247536879400050, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
+      propertyPath: isDead
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5068247536879400050, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
+      propertyPath: isAggro
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5068247536879400050, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
       propertyPath: targetT
       value: 
       objectReference: {fileID: 1549220286}
@@ -360,6 +368,10 @@ PrefabInstance:
     - target: {fileID: 5068247536879400050, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
       propertyPath: myStats.damage
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5068247536879400050, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
+      propertyPath: myStats.maxHealth
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7838204025656979648, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
       propertyPath: m_Name
@@ -413,7 +425,7 @@ PrefabInstance:
       addedObject: {fileID: 1679472235}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7838204025656979648, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
-      insertIndex: 2
+      insertIndex: 1
       addedObject: {fileID: 1816115224}
     - targetCorrespondingSourceObject: {fileID: 1932342290556444175, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
       insertIndex: -1
@@ -2769,7 +2781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3eaebafc0e68524eaa838cdf484cc82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetNpc: {fileID: 1314202606}
+  targetNpc: {fileID: 0}
   killKey: 8
 --- !u!1 &1105353790
 GameObject:
@@ -3597,6 +3609,7 @@ MonoBehaviour:
   isAlive: 1
   maxHealth: 100
   currentHealth: 0
+  npcScript: {fileID: 0}
   uiScript: {fileID: 1200421046}
 --- !u!1 &1549962648
 GameObject:
@@ -4030,6 +4043,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697683610}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1793530150 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7346629577661915134, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
+  m_PrefabInstance: {fileID: 142095374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc5c3302d96221a4dad74b497e704837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1816115220 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7838204025656979648, guid: a786c8df1d213f342ba77cb1cba41afd, type: 3}
@@ -4049,12 +4073,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1816115220}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02f600a2189633c45bddd2eff1635bb0, type: 3}
+  m_Script: {fileID: 11500000, guid: ab52afebdbcafb04ca7933068e32e15b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthManager
+  m_EditorClassIdentifier: Assembly-CSharp::NpcHealthManager
   isAlive: 1
   maxHealth: 100
   currentHealth: 0
+  npcScript: {fileID: 1314202606}
+  gibGo: {fileID: 3700138826753198300, guid: 30f011ab65e175a4b80fe28e1bfd6874, type: 3}
+  dmgToGib: 20
+  hurtGo: {fileID: 4899110881135499833, guid: 2907afcb96adcef40b55b1925c7b8bba, type: 3}
+  deadGo: {fileID: 4899110881135499833, guid: cf173d74733fdfa4a9f0dbda11b4ce4c, type: 3}
+  rdScript: {fileID: 1793530150}
 --- !u!1 &1917666542
 GameObject:
   m_ObjectHideFlags: 0
@@ -4668,6 +4698,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2035797158}
   m_CullTransparentMesh: 1
+--- !u!1 &2085534798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2085534800}
+  - component: {fileID: 2085534799}
+  m_Layer: 0
+  m_Name: ==GameManager==
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2085534799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085534798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189d1fb2f6e8e3d40996d97732821416, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  restartKey: 114
+--- !u!4 &2085534800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085534798}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.23, y: 1.16441, z: 0.00103}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2092033650
 GameObject:
   m_ObjectHideFlags: 0
@@ -4940,6 +5015,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 2085534800}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 564514605}

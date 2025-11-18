@@ -12,12 +12,12 @@ public class PlayerHealthManager : HealthManager
         base.InitHealth();
         uiScript.UpdateHealthUi(currentHealth, maxHealth);
     }
-    public override void TakeDamage(int dmg)
+    public override void TakeDamage(int damage, float force = 0f, Vector3 hitPoint = new Vector3(), Vector3 dir = new Vector3())
     {
-        base.TakeDamage(dmg);
+        base.TakeDamage(damage);
         uiScript.UpdateHealthUi(currentHealth, maxHealth);
     }
-    public override void Die()
+    public override void Die(float force = 0, Vector3 dir = new Vector3())
     {
         base.Die();
         uiScript.UpdateHealthUi(currentHealth, maxHealth);

@@ -152,7 +152,7 @@ public class MissionSimulator : MonoBehaviour
         //randomise dmg
         float randomDamage = (float)dmg * Random.Range(0.1f, 1.5f);
         dmg = Mathf.RoundToInt(randomDamage);
-        targetFighter.TakeDamage(dmg);
+        targetFighter.GetComponent<HealthManager>().TakeDamage(dmg);
 
         //4.report damage
         if (targetFighter.isDead)
@@ -197,7 +197,7 @@ public class MissionSimulator : MonoBehaviour
         float randomDamage = (float)dmg * Random.Range(0.1f, 1.5f);
         dmg = Mathf.RoundToInt(randomDamage);
 
-        targetFighter.TakeDamage(dmg);
+        targetFighter.GetComponent<HealthManager>().TakeDamage(dmg);
 
         //4.report damage
         if (targetFighter.isDead)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TestKillNpc : MonoBehaviour
 {
-    [SerializeField] BaseNPC targetNpc;
+    [SerializeField] HealthManager targetNpc;
     [SerializeField] KeyCode killKey;
 
     // Update is called once per frame

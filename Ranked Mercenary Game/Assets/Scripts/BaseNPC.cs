@@ -5,9 +5,7 @@ public class BaseNPC : MonoBehaviour
     public Stats myStats;
     public int currentHealth;
 
-    public bool isDead = false;
-
-    public RagdollController rdScript;
+    public bool isDead = false;    
     
     public MovementState myMoveState;
     public bool isAggro = false;
@@ -51,7 +49,7 @@ public class BaseNPC : MonoBehaviour
     public float projForce = 100f;
 
     [Header("Health")]
-    //HealthManager healthManager;
+    HealthManager healthManager;
 
     [Header("Visuals")]
     [SerializeField] Transform rbRoot;
@@ -69,7 +67,8 @@ public class BaseNPC : MonoBehaviour
 
     public void initHealth()
     {
-        currentHealth = myStats.maxHealth;
+        healthManager = GetComponent<HealthManager>();
+        healthManager.InitNpcHealth(this);
     }
 
     public virtual void PlayerDetector()
@@ -274,35 +273,35 @@ public class BaseNPC : MonoBehaviour
 
     }
 
-    public virtual void TakeDamage(int damage, Vector3 dir = new Vector3(), float force = 0f, Vector3 hitPoint = new Vector3())
-    {
-        if (hurtGo != null) Instantiate(hurtGo, hitPoint, Quaternion.identity);
+    //public virtual void TakeDamage(int damage, Vector3 dir = new Vector3(), float force = 0f, Vector3 hitPoint = new Vector3())
+    //{
+    //    if (hurtGo != null) Instantiate(hurtGo, hitPoint, Quaternion.identity);
+    //
+    //    if (currentHealth - damage > 0)
+    //    {
+    //        currentHealth -= damage;             
+    //    }
+    //    else
+    //    {
+    //        if (deadGo != null)
+    //        {
+    //            GameObject deathFX = Instantiate(deadGo, hitPoint, Quaternion.identity);
+    //           // deathFX.transform.parent = rbRoot;
+    //        }
+    //
+    //        currentHealth = 0;
+    //        Die(dir, force);            
+    //    }
+    //}
 
-        if (currentHealth - damage > 0)
-        {
-            currentHealth -= damage;             
-        }
-        else
-        {
-            if (deadGo != null)
-            {
-                GameObject deathFX = Instantiate(deadGo, hitPoint, Quaternion.identity);
-               // deathFX.transform.parent = rbRoot;
-            }
-
-            currentHealth = 0;
-            Die(dir, force);            
-        }
-    }
-
-    public virtual void Die(Vector3 dir = new Vector3(), float force = 0f)
-    {
-        isDead = true;
-
-        if (rdScript != null) rdScript.EnableRagdoll(dir, force);
-
-        if (myAnimator != null) myAnimator.enabled = false;
-    }
+    //public virtual void Die(Vector3 dir = new Vector3(), float force = 0f)
+    //{
+    //    isDead = true;
+    //
+    //    if (rdScript != null) rdScript.EnableRagdoll(dir, force);
+    //
+    //    if (myAnimator != null) myAnimator.enabled = false;
+    //}
 
     private void OnDrawGizmosSelected()
     {

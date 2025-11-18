@@ -22,7 +22,7 @@ public class NpcMerc : BaseNPC
         nameText = GetComponentInChildren<TMP_Text>();
         smr = GetComponentInChildren <SkinnedMeshRenderer>();
 
-        //smr.materials[1].color = Random.ColorHSV(0, 1, 0, 1, 0.3f, 1);
+        base.initHealth();
     }
 
     private void Update()
@@ -53,23 +53,4 @@ public class NpcMerc : BaseNPC
         smr.materials[1].color = corp.companyColor;
     }
 
-    public override void Die(Vector3 dir = new Vector3(), float force = 0f)
-    {
-        isDead = true;
-
-        if (willChunk)
-        {
-            GameObject gibs = Instantiate(chunkGo, transform.position, transform.rotation);
-            gibs.GetComponent<NpcChunks>().MoveChunks(dir);
-
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            if (rdScript != null) rdScript.EnableRagdoll(dir, force);
-
-            if (myAnimator != null) myAnimator.enabled = false;
-        }
-        
-    }
 }
