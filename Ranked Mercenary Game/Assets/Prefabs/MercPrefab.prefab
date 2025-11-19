@@ -220,9 +220,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7940902323249954889}
   - component: {fileID: 1914612313032529884}
+  - component: {fileID: 6497151085722441733}
   - component: {fileID: 5068247536879400050}
   - component: {fileID: -4199995729765753048}
   - component: {fileID: 5468156078740834518}
+  - component: {fileID: 1633531863378005034}
+  - component: {fileID: 7544098113673649610}
   m_Layer: 7
   m_Name: MercPrefab
   m_TagString: Untagged
@@ -269,6 +272,38 @@ MonoBehaviour:
   hurtGo: {fileID: 4899110881135499833, guid: 2907afcb96adcef40b55b1925c7b8bba, type: 3}
   deadGo: {fileID: 4899110881135499833, guid: cf173d74733fdfa4a9f0dbda11b4ce4c, type: 3}
   rdScript: {fileID: 7346629577661915134}
+--- !u!114 &6497151085722441733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838204025656979648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a1feaa4d71dafd4191ed8e3750920ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellManager
+  casterType: 1
+  currentSpell: {fileID: 11400000, guid: a0c51dedec821f945962a169ef10376a, type: 2}
+  firePoint: {fileID: 6669807416298822843}
+  spellForce: 40
+  explodeLayer:
+    serializedVersion: 2
+    m_Bits: 192
+  castKey: 323
+  maxMana: 100
+  currentMana: 0
+  rechargeSpeed: 1
+  rechargeWaitTime: 2
+  explosionGo: {fileID: 2592980718615538731, guid: 7ea8c9e7eafeb7043959317aa45dc75a, type: 3}
+  useCameraShake: 0
+  maxExplosionRangeForCamShake: 30
+  spellClip: {fileID: 8300000, guid: e209960dda5c2ad46a9ce7d4151f8064, type: 3}
+  explosionClip: {fileID: 8300000, guid: 72864d846e1a7be4083613544349c0a8, type: 3}
+  audioSource: {fileID: 1633531863378005034}
+  camShake: {fileID: 0}
+  playerUi: {fileID: 0}
 --- !u!114 &5068247536879400050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,9 +328,13 @@ MonoBehaviour:
   currentHealth: 0
   isDead: 0
   myMoveState: 1
-  isAggro: 1
+  isAggro: 0
   playerTag: Player
   timeBetweenChecks: 1
+  navAgent: {fileID: 7544098113673649610}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
   currentSpeed: 0
   walkSpeed: 4
   runSpeed: 7.5
@@ -305,15 +344,16 @@ MonoBehaviour:
   currentAnimSpeed: 0
   animSpeedDamp: 8
   rotDamp: 8
-  wanderRadius: 24.02
+  wanderRadius: 28.7
   wanderIdleTime: 2
   attackType: 0
   targetT: {fileID: 0}
-  pursueRadius: 18.2
-  attackRadius: 5
+  pursueRadius: 21.7
+  attackRadius: 14.68
+  stopRadius: 5
   aggroTime: 2.5
+  spellManager: {fileID: 6497151085722441733}
   attackPoint: {fileID: 6669807416298822843}
-  attackRate: 0.5
   projectileGo: {fileID: 8742878994817435743, guid: 6d79f341dd7729d48be9ccf2f5a4ca35, type: 3}
   projForce: 50
   rbRoot: {fileID: 4919799133488752653}
@@ -363,6 +403,125 @@ CapsuleCollider:
   m_Height: 1.9853954
   m_Direction: 1
   m_Center: {x: 0, y: 0.97353935, z: 0}
+--- !u!82 &1633531863378005034
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838204025656979648}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!195 &7544098113673649610
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838204025656979648}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1001 &6588820400785016123
 PrefabInstance:
   m_ObjectHideFlags: 0

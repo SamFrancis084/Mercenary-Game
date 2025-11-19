@@ -60,11 +60,11 @@ Material:
     - _Scale2: 75.13
     - _Speed2: 0.005
     - _VornoiCellDensity: 4.84
-    - _VornoiEffect: 0.36
+    - _VornoiEffect: 0.42
     - _res: 1.6
     m_Colors:
-    - _CloudColor: {r: 0.2750949, g: 0.2688857, b: 0.3433962, a: 1}
-    - _Color1: {r: 0.28453538, g: 0.609266, b: 0.6528301, a: 1}
-    - _Color2: {r: 0.7472819, g: 0.7318547, b: 0.9169811, a: 1}
+    - _CloudColor: {r: 0.31091887, g: 0.38464412, b: 0.413, a: 1}
+    - _Color1: {r: 0.27637592, g: 0.47501823, b: 0.645283, a: 1}
+    - _Color2: {r: 0.5571734, g: 0.6602134, b: 0.6981132, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BaseNPC : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class BaseNPC : MonoBehaviour
     float checkTimer = 0f;
 
     [Header("Movement")]
+    [SerializeField] NavMeshAgent navAgent;
+    public LayerMask groundLayer;
     [SerializeField] float currentSpeed = 0;
     public float walkSpeed = 4f;
     public float runSpeed = 7.5f;
@@ -38,12 +41,13 @@ public class BaseNPC : MonoBehaviour
     public Transform targetT;
     [SerializeField] float pursueRadius = 10f; // change to a cone of vision
     [SerializeField] float attackRadius = 5f; // change to a cone of vision
+    [SerializeField] float stopRadius = 2f;
     [SerializeField] float aggroTime = 5f; // use once player is out of range
     float aggroTimer = 0f;
 
     [Header("Attacking")]
+    public SpellManager spellManager;
     public Transform attackPoint;
-    public float attackRate = 0.5f;
     float attackTimer = 0f;
     public GameObject projectileGo;
     public float projForce = 100f;
@@ -108,7 +112,11 @@ public class BaseNPC : MonoBehaviour
 
     public virtual void MovementManager()
     {
-        if (isDead) return; // dont move if dead
+        if (isDead)
+        {
+            if (navAgent.isActiveAndEnabled) navAgent.enabled = false;
+            return;
+        } // dont move if dead
 
         switch (myMoveState) 
         {
@@ -142,24 +150,23 @@ public class BaseNPC : MonoBehaviour
         if (!walkPointSet)
         {
             currentSpeed = 0f;
+            navAgent.speed = 0f;
 
             if (wanderIdleTimer < Random.Range(wanderIdleTime * 0.8f, wanderIdleTime * 1.2f))
             {
                 wanderIdleTimer += Time.deltaTime;
                 UpdateAnimator();
                 return;
-            }
+            }            
 
-            Vector3 randomPos = transform.position + Random.insideUnitSphere * wanderRadius;
-            randomPos.y = 0f; // change to ground height if not using navmesh
-            walkPoint = randomPos;
+            navAgent.destination = FindWalkPoint();
 
             walkPointSet = true;
         }
         else
         {
             currentSpeed = walkSpeed;
-            
+            navAgent.speed = walkSpeed;
 
             if (distToPos < 0.3f)
             {
@@ -168,14 +175,27 @@ public class BaseNPC : MonoBehaviour
                 walkPointSet = false;
             }
 
-            //move to new point
-            Vector3 dir = (walkPoint - transform.position).normalized;
-            transform.position += dir * Time.deltaTime * walkSpeed;
-
             //rotate to walkPoint smoothly
-            transform.rotation = SmoothRotateToTarget(dir);
+            //Vector3 dir = (walkPoint - transform.position).normalized;
+            //transform.rotation = SmoothRotateToTarget(dir);
         }
         UpdateAnimator();
+    }
+
+    Vector3 FindWalkPoint()
+    {
+        walkPoint = transform.position;
+
+        Vector3 randomPos = transform.position + Random.insideUnitSphere * wanderRadius;
+        randomPos.y = 20f;
+
+        RaycastHit hit;
+        if (Physics.Raycast(randomPos, Vector3.down, out hit, 40f, groundLayer))
+        {
+            walkPoint = hit.point;
+        }
+
+        return walkPoint;
     }
 
     void PursuePlayer()
@@ -197,60 +217,67 @@ public class BaseNPC : MonoBehaviour
         }
 
             //move to new point
-            walkPoint = targetT.position;
-        walkPoint.y = 0f;
+        navAgent.SetDestination(targetT.position);
 
         Vector3 dir = (walkPoint - transform.position).normalized;
 
         if (distToPos < attackRadius)
         {
             currentSpeed = 0f;
-            
+            navAgent.speed = 0f;
+
             myMoveState = MovementState.ATTACK;
         }
         else
         {
             currentSpeed = runSpeed;
-            transform.position += dir * Time.deltaTime * runSpeed;
+            navAgent.speed = runSpeed;
         }
 
         UpdateAnimator();
         //rotate to walkPoint smoothly
-        transform.rotation = SmoothRotateToTarget(dir);
+        //transform.rotation = SmoothRotateToTarget(dir);
     }
 
     void Attack()
     {
         UpdateAnimator();
 
+        navAgent.SetDestination(targetT.position);
+
         float distToPos = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(targetT.position.x, targetT.position.z));
+        Vector3 dir = (targetT.position - attackPoint.position).normalized;
 
-        if (distToPos < attackRadius)
+        //move controller
+        if (distToPos <= stopRadius) // very close
         {
-            Vector3 dir = (targetT.position - attackPoint.position).normalized;
-            transform.rotation = SmoothRotateToTarget(dir);
-
-            attackTimer -= Time.deltaTime;
-            if (attackTimer <= 0) // attack
-            {
-                Fire(dir);
-                attackTimer = attackRate;
-            }
+            navAgent.speed = 0f;
+            currentSpeed = 0f;
+        }
+        else if (distToPos < attackRadius) // run and gun
+        {
+            currentSpeed = runSpeed;
+            navAgent.speed = runSpeed;
         }
         else
         {
-            myMoveState = MovementState.ATTACK;
+            myMoveState = MovementState.PURSUE;
         }
-        
+
+        //transform.rotation = SmoothRotateToTarget(dir);
+
+        attackTimer -= Time.deltaTime;
+        if (attackTimer <= 0) // attack
+        {
+            Fire(dir);
+            attackTimer = spellManager.currentSpell.spellFireRate;
+        }
+
     }
 
     void Fire(Vector3 dir)
     {
-        GameObject proj = Instantiate(projectileGo, attackPoint.position, transform.rotation);
-        Rigidbody rb = proj.GetComponent<Rigidbody>();
-        proj.GetComponent<Projectile>().damage = myStats.damage;
-
-        rb.AddForce(dir * projForce, ForceMode.Impulse);
+        spellManager.Cast();
     }
 
     Quaternion SmoothRotateToTarget(Vector3 dir)
@@ -272,36 +299,6 @@ public class BaseNPC : MonoBehaviour
         myAnimator.SetFloat(animSpeedString, currentAnimSpeed);
 
     }
-
-    //public virtual void TakeDamage(int damage, Vector3 dir = new Vector3(), float force = 0f, Vector3 hitPoint = new Vector3())
-    //{
-    //    if (hurtGo != null) Instantiate(hurtGo, hitPoint, Quaternion.identity);
-    //
-    //    if (currentHealth - damage > 0)
-    //    {
-    //        currentHealth -= damage;             
-    //    }
-    //    else
-    //    {
-    //        if (deadGo != null)
-    //        {
-    //            GameObject deathFX = Instantiate(deadGo, hitPoint, Quaternion.identity);
-    //           // deathFX.transform.parent = rbRoot;
-    //        }
-    //
-    //        currentHealth = 0;
-    //        Die(dir, force);            
-    //    }
-    //}
-
-    //public virtual void Die(Vector3 dir = new Vector3(), float force = 0f)
-    //{
-    //    isDead = true;
-    //
-    //    if (rdScript != null) rdScript.EnableRagdoll(dir, force);
-    //
-    //    if (myAnimator != null) myAnimator.enabled = false;
-    //}
 
     private void OnDrawGizmosSelected()
     {
